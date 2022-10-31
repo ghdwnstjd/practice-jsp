@@ -1,0 +1,98 @@
+1. 화면 구성할 jsp 파일 만들기
+	1) jsp 파일에서 경로 설정이 필요한 것은 ${pageContext.request.contextPath}/경로로 기재한다.
+	   해당 경로는 WebContent 부터 시작된다.
+
+2. com.korea.it.app 에 
+	1) Execute.java 만들기
+	2) Result.java 만들기
+
+3. VO 만들기
+	- 다른 테이블의 변수를 추가하려면 DTO를 만들어서 진행
+
+4. myBatis, config 파일생성
+
+5. Mapper 만들기
+	Mapper를 통해 mySql에서 가져오는 정보를 가지고 조건문을 작성한다.
+		- JDBC에서 ?로 기재한 것은 #{변수이름}으로 작성한다.
+		 	desc limit ?, ? →  desc limit #{startRow}, #{rowCount}
+		- parameterType : 어떤 값의 파라미터가 들어올 것인지 알려주는 것
+		- resultType : 결과값을 반환할 때 어떤 타입으로 전달을 할 것인지 알려주는 것
+			      resultType이 dao에서 메소드의 리턴 타입이 된다. -> result타입이 없을 경우, 메소드 리턴 타입은 void
+
+6. DAO 만들기
+	mapper에서 만든 조건문을 대입해 정보 필터링을 한다.
+		- selectAll -> selectList로 리턴(VO, DTO 등)
+		- selectOne -> selectOne으로 리턴(COUNT 등)
+	작성 시
+		(1) selectList
+		sqlSession.selectList.("mapper의 namespace값".메소드명, 매개변수) 형태로 기재한다
+			public List<BoardDTO> selectAll(Map<String, Integer> pageMap) {
+				return sqlSession.selectList("Board.selectAll", pageMap);
+			}
+
+		(2) selectOne
+		sqlSession.selectOne("mapper의 namespace값".메소드명) or sqlSession.selectOne("mapper의 namespace값".메소드명, 매개변수) 형태로 기재한다.
+			public int selectCount() {
+				return sqlSession.selectOne("Board.selectCount");
+			}
+
+		(3) insert
+		sqlSession.insert("mapper의 namespace값".메소드명, 매개변수) 형태로 기재한다
+		   public void insertId(MemberVO memberVO) {
+			sqlSession.insert("Member.insertId", memberVO);
+  		   }
+
+7. web.xml에 주소값을 기재
+	여기서 작성한 주소값은 FrontController로 넘어가며, 거기서 어떤 명령을 수행해야 하는지 결정한다.
+	명령어를 직접 입력하는게 아니고, 어떤 명령을 할지만 결정하며 그 명령을 수행할 Controller로 이동한다.
+
+8. FrontController에서 수행할 명령 기재
+	* request, response의 차이점
+	request : request 객체는 최종적으로 클라이언트에게 응답되기 전 까지는 계속 유지된다.
+	responst: redirect. get,post 방식
+	클라이언트 측에서 Request 를 보내고 서버로부터 Response를 받는다.
+
+	1. doGet, doPost, doProcess를 기재
+	(1) doGet, doPost는 고칠 것 없이 그대로 기재
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doProcess(req, resp);
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doProcess(req, resp);
+	}
+
+	(2) doProcess는 아래까지 그대로 기재하고, 그 밑으로는 우리가 수행할 명령어를 기재한다.
+	(3) 명령어 기재 후 맨 아래에는 result 값이 null이 아닐 경우의 수를 일괄처리한다.
+		protected void doProcess(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			String requestURI = req.getRequestURI();
+			String contextPath = req.getContextPath();
+			String request = requestURI.substring(contextPath.length());
+			Result result = null;
+
+			수행할 명령어
+			
+			//일괄처리
+			if(result != null) {
+				if(result.isRedirect()) {
+					resp.sendRedirect(result.getPath());
+				}else {
+					RequestDispatcher dispatcher = req.getRequestDispatcher(result.getPath());
+					dispatcher.forward(req, resp);
+				}
+			}
+		}
+
+	(4) 수행할 명령어는 result 값으로 컨트롤러 값을 받는다.
+	※ aJax로 수행하는 것은 result 값을 전달받지 않는다. → OkController에서 out.print 형태로 바로 화면에 출력함
+
+	
+9. Controller에서 수행할 명령 기재
+	(1) OkController와 Controller의 차이
+		OkController는 수행 시 검사가 필요한 것이고, Controller는 검사가 끝난 후 or 검사가 없을 경우 움직이는 경로다
+	(2) 수행할 명령을 모두 적고, 이 결과값의 경로를 지정한다.
+	    그 전에, redirect인지, 포워딩인지 결정한다.
+	    

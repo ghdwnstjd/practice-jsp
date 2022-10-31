@@ -1,0 +1,89 @@
+0. 진행 전 lib 안에 jstl, mybatis, mysql, standard, tomcat-dbcp 5개의 jar파일을 넣는다.
+1. FrontController 만들기
+	- 패키지명은 com.프로젝트명.app.member
+	- servlet class를 만들 때는 HttpServlet을 superClass로 지정한다.
+1-1. doGet, doPost 메소드 재정의
+	* 동일한 로직을 실행할 메소드를 하나 더 정의
+	private void doProcess(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+	}
+
+2. mySQL 테이블 만들기
+3. 이클립스 와서 vo 만들기
+4. MyBatis 설정하기 - 기존 꺼에서 config.xml - url, mapper resource 바꿔야함
+5. DAO 만들기
+6. web.xml에 servlet, servlet-mapping 설정
+  <servlet>
+  	<servlet-name>MemberFrontController</servlet-name>
+  	<servlet-class>com.koreait.app.member.MemberFrontController</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>MemberFrontController</servlet-name>
+  	<url-pattern>*.me</url-pattern>
+  </servlet-mapping>
+
+
+7. FrontController 에서 시험 
+	7-0, FrontController 작성 내용
+	private void doProcess(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		req.setCharacterEncoding("UTF-8");
+		resp.setCharacterEncoding("UTF-8");
+		resp.setContentType("text/html; charset=utf-8");
+		
+		String url = URLDecoder.decode(req.getRequestURI(), "UTF-8");
+		PrintWriter out = resp.getWriter();
+		out.print(url);
+		out.close();
+	}
+
+	7-1. Tomcat localhost에서 Modules - Add Web Module에 실행할 Module 추가
+	7-2. 서버 실행
+	7-3. 인터넷에서 직접 경로 입력하여 들어가기
+
+8. FrontController 작성
+	private void doProcess(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String requestURI = req.getRequestURI();
+		String contextPath = req.getContextPath();
+		String request = requestURI.substring(contextPath.length());
+		
+		if(request.equals("/member/JoinOk.me")) {
+			
+		}
+	}
+
+9. 만들 페이지 Controller를 FrontController와 같은 패키지에 생성(JoinOkController)
+public class JoinOKController {
+	public Result execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		return null;
+	}
+}
+
+10. Result라는 클래스를 생성 
+	- 받아야할 것이 2개가 있으므로 한 번에 받기 위해 클래스를 만든다.
+
+
+
+11. 인터페이스 제작(최상위 패키지로)
+	- 매번 새롭게 정의하기 불편하기 때문에 인터페이스를 만들어준다.
+	public interface Execute {
+		public Result execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException ;
+	}
+
+12. 만들 페이지 Controller에 리다이렉트인지, 포워드인지 확인하여 전달
+public class JoinOKController implements Execute {
+	public Result execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Result result = new Result(); 
+		
+		
+		
+		result.setRedirect(true);
+//		리다이렉트라 전송 시 request 객체가 초기화되므로 직접 ContextPath를 붙여서 저장한다.
+		result.setPath(req.getContextPath() + "member/login.me");
+		return null;
+	}
+}
+
+
+
+13. 화면 구현

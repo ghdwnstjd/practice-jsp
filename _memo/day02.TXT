@@ -1,0 +1,6 @@
+JDBC 진행 시 jar 파일은 
+(1) build
+(2) WebContent > WEB-INF > lib 안에 직접 경로에서 드래그해서 가져오는 것 
+2개에 넣어야 한다.
+
+파일경로: C:\gb_0900_hjs\dbms\mysql\resource\mysql-connector-java-8.0.30

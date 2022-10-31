@@ -1,0 +1,9 @@
+FrontController
+	1. 화면 이동이 없는 Ajax라면 result값을 저장하지 않는다.(중복검사 등)
+	2. 화면 이동이 있으면 result를 선언하고 그 안에 jsp 경로를 setPath 해준다.
+
+Controllor
+	1. 확인이 필요한 것은 OkController, 아니면 Controller로 만든다.
+	2. 화면에서 input 타입에 기재한 내용을 가져오려면 타입의 name을 req.getParameter(이름)으로 가져온다.
+	3. 반대로 Controller에서 화면으로 보내기 위해서는 req.setAttribute("연산 결과를 작성할 변수명", 연산한 결과) 로 전달한다.
+	   이후 화면에서 "${변수명}" 형태로 작성한다.

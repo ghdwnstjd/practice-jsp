@@ -1,0 +1,78 @@
+1. Ajax 기본
+- Ajax는 body 를 사용하는 것
+- POST 방식은 send로 받을 타입을 설정해주어야 한다.
+- send로 요청한 것을 body에 responseText로 옮겨넣는다.
+- 내용물을 어딘가에서 가져오려고 할 때는 request.getParameter로 가져온다.
+- ajax에서 가져온 내용에 대한 연산 결과를 다시 화면에 뿌려줄 때는 out.println을 사용한다.
+
+
+	function send(){
+		var xhr = new XMLHttpRequest();
+		//xhr.open("GET", "data.jsp"); //GET 방식으로 data.jsp파일의 바디를 사용하겠다는 것을 의미
+		xhr.open("POST", "data.jsp");
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // POST 에서는 send로 받을 타입을 설정해주어야 함
+		xhr.send("msg1=반갑습니다&msg2=어서오세요"); //send가 요청임
+		
+		// 상태가 변경될 때마다 이 함수를 실행한다는 것을 의미
+		xhr.onreadystatechange = function(){
+			// 현재 상태가 DONE(요청한 데이터의 처리가 완료되어 응답할 준비가 완료됨)이 되었을 때 실행하겠다는 것을 의미
+			// readyState: 현재 준비가 완료되었는가, status: 서버의 문서 상태 
+			// status가 200이라는 것은 완료되었다는 것을 의미(404 : 서버에 문서가 존재하지 않음)
+			if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200){
+				document.getElementById("result").innerHTML = xhr.responseText; //data.jsp파일의 바디에 작성된 내용
+			}
+		}
+	}
+
+
+
+2. jstl
+맨 위에 기재: <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+사용법
+	1. 사용할 변수이름을 var에 설정, 값을 value에 넣는다.
+		<c:set var="name" value="홍길동" scope="page"/>
+	2. 사용할 때는 ${var로 선언한 변수이름} 형태로 진행
+		<h3>${name}</h3>
+		<h3><c:out value="${name}"/></h3>
+	3. 달러 표시를 쓰고 싶을 때는 아래와 같이 사용
+		<h4>&dollar;{name}</h4>
+	4. 삭제할 때는 remove로 어떤 스코프인지 까지 기재
+		<c:set var="nation" value="미국" scope="session"/>
+		<c:remove var="nation" scope="session"/>
+	5. 디폴트 값 설정도 가능
+		<h4><c:out value="${nation}" default="한국"/></h4>
+	6. 직접 연산도 가능
+		<h4>${10+20}</h4>
+
+	7. 반복문 사용 방법
+		<c:forEach var = "i" begin="1" end="10" step="1">
+			<c:out value="${i}"/>
+		</c:forEach>
+	8. 조건문
+		choose - when - otherwise
+	9. 값이 비어있는 지 확인할 때
+		empty, not empty
+	10. 예시
+ 	<c:choose>
+       	<c:when test="${empty param.input}">
+          		<form>
+           	  		<label>
+           	     			이름 <input type="text" name="input">
+           	  		</label>
+             		<input type="submit" value="전송">
+          		</form>
+       	</c:when>
+       	<c:otherwise>
+          		<c:choose>
+             		<c:when test="${param.input == 'admin'}">
+                		<h3>관리자</h3>
+             		</c:when>
+             		<c:when test="${param.input == 'member'}">
+                			<h3>일반 회원</h3>
+             		</c:when>
+            		<c:otherwise>
+                			<h3>비회원</h3>
+            		</c:otherwise>
+          			</c:choose>
+       		</c:otherwise>
+    	</c:choose>
