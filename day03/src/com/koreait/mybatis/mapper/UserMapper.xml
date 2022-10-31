@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+User라는 이름의 mapper를 만들고, 그 안에 수행할 DB 선언문들을 작성한다.
+mapper는 테이블 개수와 동일하게 만들어주어야 한다.
+ -->
+ 
+
+<mapper namespace="User">
+   <select id="checkId" parameterType="string" resultType="_int">
+      select count(user_id) from tbl_user where user_id = #{userId}
+   </select>
+   
+   <insert id="insertId" parameterType="vo.UserVO">
+		insert into tbl_user (user_id) values (#{userId})
+   </insert>
+   
+   <select id="selectAll" resultType="vo.UserVO">
+   		select user_number, user_id from tbl_user
+   </select>
+</mapper>

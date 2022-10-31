@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="User">
+
+	<!-- 중복검사 -->
+   <select id="checkId" parameterType="string" resultType="_int">
+      select userStatus from tbl_user where userId = #{userId}
+   </select>
+   
+   <!-- 회원가입 -->
+   <insert id="insertId" parameterType="vo.UserVO">
+		insert into tbl_user (userId, userPassword, userName, userAge, userPhoneNumber, userBirth) values (#{userId}, #{userPassword}, #{userName}, #{userAge}, #{userPhoneNumber}, #{userBirth})
+   </insert>
+   
+   <!-- 로그인 -->
+   <select id="login" parameterType="_int" resultType="vo.UserVO">
+   		select userNumber, userStatus from tbl_user where userId = #{userId} and userPassword = #{userPassword}
+   </select>
+   
+   <!-- 아이디 찾기 -->
+   <select id="findId" resultType="vo.UserVO">
+   		select userNumber, userId, userPhoneNumber from tbl_user where userPhoneNumber = #{userPhoneNumber}
+   </select>
+   
+   <!-- 회원 정보 전체 수정 -->
+   <update id="informationChange" parameterType="vo.UserVO">
+   		update tbl_user set userName=#{userName}, userPassword=#{userPassword}, userPhoneNumber=#{userPhoneNumber}, userAge=#{userAge}, userBirth=#{userBirth} WHERE userNumber = #{userNumber}
+   </update>
+      
+   <!-- 회원 전체 정보 조회 -->
+   <select id="informationCheck" resultType="vo.UserVO">
+   		select userNumber, userId, userPassword, userName, userAge, userPhoneNumber, userStatus, userBirth from tbl_user where userNumber= #{userNumber}
+   </select>
+   
+   
+   <!-- 회원 탈퇴 -->
+   <update id="delete" parameterType="vo.UserVO">
+   		update tbl_user set userStatus=? where userNumber= #{userNumber}
+   </update>
+   
+   
+   <!-- 회원 탈퇴 복구 -->
+   <update id="restore" parameterType="vo.UserVO">
+   		update tbl_user set userStatus=? where userNumber = #{userNumber}
+   </update>
+   
+   
+   <!-- 같은 핸드폰 번호로 가입된 아이디 개수 조회 -->
+   <select id="checkPhoneNumber" parameterType="_int" resultType="_int">
+   		select count(userPhoneNumber) result from tbl_user where userPhoneNumber = #{userPhoneNumber}
+   </select>
+</mapper>

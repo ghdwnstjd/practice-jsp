@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+   <display-name>day01</display-name>
+   <welcome-file-list>
+      <welcome-file>index.html</welcome-file>
+      <welcome-file>index.htm</welcome-file>
+      <welcome-file>index.jsp</welcome-file>
+      <welcome-file>default.html</welcome-file>
+      <welcome-file>default.htm</welcome-file>
+      <welcome-file>default.jsp</welcome-file>
+   </welcome-file-list>
+   
+   <!-- 자바 -->
+   <servlet>
+   	  <!-- servlet-class의 주소를 Hds로 받는다.(servlet-name의 첫 글자는 대문자로 기재) -->
+      <servlet-name>Hds</servlet-name>
+      <servlet-class>com.koreaIt.app.MyServlet</servlet-class>
+   </servlet>
+   
+   <servlet-mapping>
+   	  <!-- 위의 name을 그대로 적으면 됨 -->
+      <servlet-name>Hds</servlet-name>
+      <!-- 주소를 어떻게 나타낼 지 기재 -->
+      <url-pattern>/Hello</url-pattern>
+   </servlet-mapping>
+   
+   <!-- JSP -->
+   <servlet>
+      <servlet-name>Index</servlet-name>
+      <jsp-file>/index.jsp</jsp-file>
+   </servlet>
+   
+   <servlet-mapping>
+      <servlet-name>Index</servlet-name>
+      <url-pattern>/index</url-pattern>
+   </servlet-mapping>
+   
+   
+   
+   <!-- 자바 -->
+   <servlet>
+      <servlet-name>Oper</servlet-name>
+      <servlet-class>com.koreaIt.app.Oper</servlet-class>
+   </servlet>
+   
+   <servlet-mapping>
+      <servlet-name>Oper</servlet-name>
+      <url-pattern>/oper</url-pattern>
+   </servlet-mapping>
+   
+   <!-- JSP -->
+   <servlet>
+      <servlet-name>Calc</servlet-name>
+      <jsp-file>/calc.jsp</jsp-file>
+   </servlet>
+   
+   <servlet-mapping>
+      <servlet-name>Calc</servlet-name>
+      <url-pattern>/calc</url-pattern>
+   </servlet-mapping>
+</web-app>
+
+
+
+
+
+
+
+
+
+
+
+
+
